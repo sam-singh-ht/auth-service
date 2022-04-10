@@ -1,0 +1,33 @@
+spring:
+    redis:
+        host: localhost
+        port: 6379
+        timeout: 60000
+    datasource:
+        driver-class-name: org.postgresql.Driver
+        password: Password
+        url: jdbc:postgresql://127.0.0.1:5432/postgres?sslmode=disable
+        username: postgres
+
+app:
+    email:
+        registration:
+            senderEmail: sriman456.singh@gmail.com
+            emailSubject: GIG Economy OTP for registration
+            verificationUrl: http://localhost:8080/api/v1/confirm?otp=
+cloud:
+    aws:
+        region:
+            static: ap-southeast-1
+        credentials:
+            access-key: AKIAXKKX7G5CV6XZ2JN2
+            secret-key: 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
+
+server:
+    error:
+        include-stacktrace:  
+
+auth-service:
+    app:
+        jwtSecret: SecretKey
+        jwtExpirationMs: 86400000

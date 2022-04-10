@@ -1,0 +1,19 @@
+spring:
+    redis:
+        host: localhost
+        port: 6379
+        timeout: 60000
+    datasource:
+        driver-class-name: org.postgresql.Driver
+        password: Password
+        url: jdbc:postgresql://XXXXXX:5432/postgres?sslmode=disable
+        username: postgres
+
+server:
+    error:
+        include-stacktrace:
+
+auth-service:
+    app:
+        jwtSecret: SecretKey
+        jwtExpirationMs: 86400000
