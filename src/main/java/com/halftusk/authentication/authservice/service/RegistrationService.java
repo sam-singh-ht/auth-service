@@ -7,11 +7,13 @@ import com.halftusk.authentication.authservice.repository.AppUserRepository;
 import com.halftusk.authentication.authservice.utils.BeanMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -25,6 +27,10 @@ public class RegistrationService {
 
     @Autowired
     AppUserRepository repository;
+
+    @Value("${app.email.registration.otpExpirationInHours}")
+    private String otpExpirationInHours;
+
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
@@ -43,7 +49,7 @@ public class RegistrationService {
         AppUser appUser = repository.save(user);
         SendEmailNotificationRequest emailNotificationRequest = createEmailNotificationRequest(registrationRequest);
         emailService.sendEmail(emailNotificationRequest);
-        redisTemplate.opsForValue().set( registrationRequest.getEmail(), emailNotificationRequest.getOtp());
+        redisTemplate.opsForValue().set( registrationRequest.getEmail(), emailNotificationRequest.getOtp(), Long.valueOf(otpExpirationInHours), TimeUnit.HOURS);
         return appUser;
     }
 
@@ -52,7 +58,11 @@ public class RegistrationService {
         int number = rnd.nextInt(99999999);
         String otp = String.format("%08d", number);
         log.info("Random generated otp ", otp);
-        return SendEmailNotificationRequest.builder().emailId(request.getEmail()).otp(otp).build();
+        return SendEmailNotificationRequest.builder()
+                .emailId(request.getEmail())
+                .otp(otp)
+                .otpEnabled(false)
+                .build();
     }
 
     public AppUser confirmUserRegistration(String emailId, String otp) {

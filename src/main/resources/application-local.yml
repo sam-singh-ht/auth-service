@@ -1,4 +1,6 @@
 spring:
+    main:
+        allow-circular-references: true
     redis:
         host: localhost
         port: 6379
@@ -13,8 +15,17 @@ app:
     email:
         registration:
             senderEmail: sriman456.singh@gmail.com
-            emailSubject: GIG Economy OTP for registration
+            regSubject: GIG Economy OTP for registration
+            otpSubject: GIG Economy OTP for Login
             verificationUrl: http://localhost:8080/api/v1/confirm?otp=
+            otpExpirationInHours: 24
+        login:
+            otp:
+                otpExpirationInHours: 120
+    jwt:
+        jwtSecret: SecretKey
+        jwtExpirationMs: 1800000
+
 cloud:
     aws:
         region:
@@ -27,7 +38,4 @@ server:
     error:
         include-stacktrace:  
 
-auth-service:
-    app:
-        jwtSecret: SecretKey
-        jwtExpirationMs: 86400000
+
