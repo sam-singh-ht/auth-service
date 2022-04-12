@@ -70,10 +70,8 @@ public class UsernamePasswordAuthFilter extends OncePerRequestFilter {
         } else {
             Authentication authentication = new OtpAuthentication(username, otp);
             authentication = authenticationManager.authenticate(authentication);
-            if(authentication.isAuthenticated()){
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
-            response.setHeader("Authorization", jwtUtils.generateJwtToken(authentication));
+            String jwtToken = jwtUtils.generateJwtToken(authentication);
+            response.setHeader("Authorization", jwtToken);
         }
 
         filterChain.doFilter(request, response);
@@ -92,6 +90,6 @@ public class UsernamePasswordAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request)  {
-        return !request.getServletPath().contains("/login");
+        return !request.getServletPath().contains("/api/v1/login");
     }
 }

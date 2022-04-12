@@ -1,7 +1,9 @@
 package com.halftusk.authentication.authservice.config;
 
+import com.halftusk.authentication.authservice.security.filter.TokenAuthFilter;
 import com.halftusk.authentication.authservice.security.filter.UsernamePasswordAuthFilter;
 import com.halftusk.authentication.authservice.security.provider.OtpAuthenticationProvider;
+import com.halftusk.authentication.authservice.security.provider.TokenAuthProvider;
 import com.halftusk.authentication.authservice.security.provider.UsernamePasswordAuthProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +26,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private OtpAuthenticationProvider otpAuthenticationProvider;
 
+    @Autowired
+    private TokenAuthProvider tokenAuthProvider;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.requestMatchers()
@@ -40,10 +45,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new UsernamePasswordAuthFilter();
     }
 
+    @Bean
+    public TokenAuthFilter tokenAuthFilter() {
+        return new TokenAuthFilter();
+    }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(authProvider)
-                .authenticationProvider(otpAuthenticationProvider);
+                .authenticationProvider(otpAuthenticationProvider)
+                .authenticationProvider(tokenAuthProvider);
     }
 
     @Override
