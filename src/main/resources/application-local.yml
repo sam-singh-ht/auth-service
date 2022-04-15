@@ -2,6 +2,7 @@ spring:
     main:
         allow-circular-references: true
     redis:
+        name: gig-economy-redis
         host: localhost
         port: 6379
         timeout: 60000

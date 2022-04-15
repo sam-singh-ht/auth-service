@@ -42,6 +42,8 @@ public class TokenAuthFilter extends UsernamePasswordAuthFilter {
             return true;
         }else if(request.getServletPath().contains("/api/v1/login")){
             return true;
+        }else if(request.getServletPath().contains("/api/v1/confirm")){
+            return true;
         }
         return false;
     }

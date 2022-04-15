@@ -1,19 +1,42 @@
 spring:
+    main:
+        allow-circular-references: true
     redis:
-        host: localhost
+        name: gigeconomy
+        host: gigeconomy.jyut4a.ng.0001.apse1.cache.amazonaws.com
         port: 6379
         timeout: 60000
     datasource:
         driver-class-name: org.postgresql.Driver
         password: Password
-        url: jdbc:postgresql://XXXXXX:5432/postgres?sslmode=disable
+        url: jdbc:postgresql://gigeconomy.cvkhvotq5pu5.ap-southeast-1.rds.amazonaws.com:5432/gigeconomy?sslmode=disable
         username: postgres
+
+app:
+    email:
+        registration:
+            senderEmail: sriman456.singh@gmail.com
+            regSubject: GIG Economy OTP for registration
+            otpSubject: GIG Economy OTP for Login
+            verificationUrl: http://auth2service-env.eba-ficdgupd.ap-southeast-1.elasticbeanstalk.com/api/v1/confirm?otp=
+            otpExpirationInHours: 24
+        login:
+            otp:
+                otpExpirationInHours: 120
+    jwt:
+        jwtSecret: SecretKey
+        jwtExpirationMs: 1800000
+
+cloud:
+    aws:
+        region:
+            static: ap-southeast-1
+        credentials:
+            access-key: AKIAXKKX7G5CV6XZ2JN2
+            secret-key: 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
 
 server:
     error:
         include-stacktrace:
 
-auth-service:
-    app:
-        jwtSecret: SecretKey
-        jwtExpirationMs: 86400000
+

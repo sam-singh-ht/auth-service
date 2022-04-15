@@ -15,9 +15,13 @@ repositories {
 
 dependencies {
     implementation ("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation ("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation ("org.springframework.boot:spring-boot-starter-data-redis"){
+        exclude("io.lettuce:lettuce-core")
+    }
+    implementation("redis.clients:jedis:4.2.2")
     implementation ("org.springframework.boot:spring-boot-starter-security")
     implementation ("org.springframework.boot:spring-boot-starter-validation")
+    implementation("com.amazonaws:aws-java-sdk-elasticache:1.12.200")
     developmentOnly ("org.springframework.boot:spring-boot-devtools")
     implementation ("io.jsonwebtoken:jjwt:0.9.1")
     implementation("javax.validation:validation-api:2.0.0.Final")
