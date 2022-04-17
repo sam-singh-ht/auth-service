@@ -2,6 +2,7 @@ package com.halftusk.authentication.authservice.controller;
 
 import com.halftusk.authentication.authservice.entity.AppUser;
 import com.halftusk.authentication.authservice.model.request.RegistrationRequest;
+import com.halftusk.authentication.authservice.model.request.UserRegistrationConfirmationRequest;
 import com.halftusk.authentication.authservice.service.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,7 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping
 public class RegistrationController {
 
     @Autowired
@@ -31,10 +32,9 @@ public class RegistrationController {
         return responseEntity;
     }
 
-    @GetMapping("/confirm")
-    public ResponseEntity<AppUser> confirmUserRegistration(@RequestParam(required = true) String otp,
-                                                           @RequestParam(required = true) String emailId){
-        AppUser appUser = service.confirmUserRegistration(emailId, otp);
+    @PostMapping("/confirm")
+    public ResponseEntity<AppUser> confirmUserRegistration(@RequestBody UserRegistrationConfirmationRequest request){
+        AppUser appUser = service.confirmUserRegistration(request);
         ResponseEntity<AppUser> responseEntity;
         try{
             if(appUser != null){

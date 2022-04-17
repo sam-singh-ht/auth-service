@@ -18,11 +18,12 @@ app:
             senderEmail: sriman456.singh@gmail.com
             regSubject: GIG Economy OTP for registration
             otpSubject: GIG Economy OTP for Login
-            verificationUrl: http://localhost:8080/api/v1/confirm?otp=
             otpExpirationInHours: 24
         login:
             otp:
                 otpExpirationInHours: 120
+        resetPassword:
+            otpExpirationInMin: 5
     jwt:
         jwtSecret: SecretKey
         jwtExpirationMs: 1800000
@@ -38,5 +39,6 @@ cloud:
 server:
     error:
         include-stacktrace:  
-
+    servlet:
+        context-path: /ht/api/v1
 

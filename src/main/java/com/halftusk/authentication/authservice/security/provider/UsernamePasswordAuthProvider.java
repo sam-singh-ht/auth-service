@@ -14,11 +14,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class UsernamePasswordAuthProvider implements AuthenticationProvider {
 
-    @Autowired
-    private PasswordEncoder bCryptPasswordEncoder;
+    private final PasswordEncoder bCryptPasswordEncoder;
 
-    @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+    private final UserDetailsServiceImpl userDetailsService;
+
+    public UsernamePasswordAuthProvider(PasswordEncoder bCryptPasswordEncoder, UserDetailsServiceImpl userDetailsService) {
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.userDetailsService = userDetailsService;
+    }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {

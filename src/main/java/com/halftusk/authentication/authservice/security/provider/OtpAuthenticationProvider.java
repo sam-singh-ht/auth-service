@@ -16,14 +16,15 @@ public class OtpAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
+    public static final String LOGIN_EMAIL = "login_email_";
 
     @Override
     public Authentication authenticate(Authentication authentication)
             throws AuthenticationException {
         String username = authentication.getName();
         String otp = (String) authentication.getCredentials();
-
-        String otpFromDB = String.valueOf(redisTemplate.opsForValue().get(username));
+        String redisKey = LOGIN_EMAIL+username;
+        String otpFromDB = String.valueOf(redisTemplate.opsForValue().get(redisKey));
 
         if (otpFromDB.equals(otp)) {
             return new OtpAuthentication(username, otp, List.of(() -> "USER"));

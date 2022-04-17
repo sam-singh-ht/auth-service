@@ -16,6 +16,11 @@ import java.io.IOException;
 @Slf4j
 public class TokenAuthFilter extends UsernamePasswordAuthFilter {
 
+    public static final String REGISTRATION = "/registration";
+    public static final String LOGIN = "/login";
+    public static final String CONFIRM = "/confirm";
+    public static final String FORGOT_PASSWORD = "/forgotPassword";
+    public static final String VERIFY_OTP = "/reset/verifyotp";
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -38,11 +43,12 @@ public class TokenAuthFilter extends UsernamePasswordAuthFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request)  {
-        if(request.getServletPath().contains("/api/v1/registration")) {
-            return true;
-        }else if(request.getServletPath().contains("/api/v1/login")){
-            return true;
-        }else if(request.getServletPath().contains("/api/v1/confirm")){
+        if(request.getServletPath().contains(REGISTRATION) ||
+                request.getServletPath().contains(LOGIN)||
+                request.getServletPath().contains(CONFIRM) ||
+                request.getServletPath().contains(FORGOT_PASSWORD) ||
+                request.getServletPath().contains(VERIFY_OTP)
+        ) {
             return true;
         }
         return false;

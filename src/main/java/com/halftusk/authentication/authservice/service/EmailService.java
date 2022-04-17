@@ -4,7 +4,6 @@ import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.model.*;
 import com.halftusk.authentication.authservice.model.request.SendEmailNotificationRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +11,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class EmailService {
 
-    @Autowired
-    public AmazonSimpleEmailService amazonSimpleEmailService;
+    public final AmazonSimpleEmailService amazonSimpleEmailService;
 
     @Value("${app.email.registration.senderEmail}")
     private String senderEmail;
@@ -25,16 +23,16 @@ public class EmailService {
     @Value("${app.email.registration.otpSubject}")
     private String otpSubject;
 
-    @Value("${app.email.registration.verificationUrl}")
-    private String verificationUrl;
-
+    public EmailService(AmazonSimpleEmailService amazonSimpleEmailService) {
+        this.amazonSimpleEmailService = amazonSimpleEmailService;
+    }
 
     public boolean sendEmail(SendEmailNotificationRequest request) {
         String emailTemplate;
         String emailSubject;
 
         if(!request.isOtpEnabled()){
-            emailTemplate = getEmailBodyForRegistration(createVerificationUrl(request));
+            emailTemplate = getEmailBodyForRegistration(request);
             emailSubject = regSubject;
         }else {
             emailTemplate = getEmailBodyForOtp(request);
@@ -79,13 +77,7 @@ public class EmailService {
         return messageContent;
     }
 
-    private String createVerificationUrl(SendEmailNotificationRequest request) {
-        String confirmationUrl = verificationUrl+request.getOtp()+"&emailId="+request.getEmailId();
-        log.info("Confirmation url:: {}", confirmationUrl);
-        return confirmationUrl;
-    }
-
-    private String getEmailBodyForRegistration(String url) {
+    private String getEmailBodyForRegistration(SendEmailNotificationRequest request) {
         String messageContent =  "<!DOCTYPE html>\n" +
                 "<html lang=\"en\">\n" +
                 "<head>\n" +
@@ -95,8 +87,8 @@ public class EmailService {
                 "</head>\n" +
                 "<body style=\"background: whitesmoke; padding: 30px; height: 100%\">\n" +
                 "<h5 style=\"font-size: 18px; margin-bottom: 6px\">Dear Customer,</h5>\n" +
-                "<p style=\"font-size: 16px; font-weight: 500\">Please click on the link to complete the registration</p>\n" +
-                "<a href=\""+url+"\">Confirm Registration</a>"+
+                "<p style=\"font-size: 16px; font-weight: 500\">Please find the otp to complete the registration</p>\n" +
+                "<b>"+request.getOtp()+"</b>"+
                 "</br><p>Please don't share the details to anyone.</p>\n" +
                 "</body>\n" +
                 "</html>";

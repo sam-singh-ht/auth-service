@@ -3,8 +3,10 @@ package com.halftusk.authentication.authservice.service;
 import com.halftusk.authentication.authservice.entity.AppUser;
 import com.halftusk.authentication.authservice.model.request.RegistrationRequest;
 import com.halftusk.authentication.authservice.model.request.SendEmailNotificationRequest;
+import com.halftusk.authentication.authservice.model.request.UserRegistrationConfirmationRequest;
 import com.halftusk.authentication.authservice.repository.AppUserRepository;
 import com.halftusk.authentication.authservice.utils.BeanMapper;
+import com.halftusk.authentication.authservice.utils.OtpGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class RegistrationService {
 
+    public static final String REGISTRATION = "Registration_";
     @Autowired
     BeanMapper beanToEntityMapper;
 
@@ -40,23 +43,31 @@ public class RegistrationService {
         boolean existsByEmail = repository.existsByEmail(registrationRequest.getEmail());
         boolean existsByPhoneNumber = repository.existsByPhoneNumber(registrationRequest.getPhoneNumber());
         log.info("is userName exist: {} or email id exist: {} or phone-number exist:{} ", existsByUsername, existsByEmail, existsByPhoneNumber);
-        if(existsByEmail || existsByUsername || existsByPhoneNumber){
-            log.error("Username or Email id or PhoneNumber already exist");
-            throw new BadCredentialsException("Username or Email id or PhoneNumber already exist");
+        if(existsByEmail ){
+            log.error("Email id already exist");
+            throw new BadCredentialsException("Email id already exist");
+        }
+
+        if(existsByUsername){
+            log.error("Username already exist");
+            throw new BadCredentialsException("Username already exist");
+        }
+
+        if(existsByPhoneNumber){
+            log.error("PhoneNumber already exist");
+            throw new BadCredentialsException("PhoneNumber already exist");
         }
 
         AppUser user = beanToEntityMapper.map(registrationRequest);
         AppUser appUser = repository.save(user);
         SendEmailNotificationRequest emailNotificationRequest = createEmailNotificationRequest(registrationRequest);
         emailService.sendEmail(emailNotificationRequest);
-        redisTemplate.opsForValue().set( registrationRequest.getEmail(), emailNotificationRequest.getOtp(), Long.valueOf(otpExpirationInHours), TimeUnit.HOURS);
+        redisTemplate.opsForValue().set( REGISTRATION +registrationRequest.getUsername(), emailNotificationRequest.getOtp(), Long.valueOf(otpExpirationInHours), TimeUnit.HOURS);
         return appUser;
     }
 
     private SendEmailNotificationRequest createEmailNotificationRequest(RegistrationRequest request) {
-        Random rnd = new Random();
-        int number = rnd.nextInt(99999999);
-        String otp = String.format("%08d", number);
+        String otp = OtpGenerator.generateOtp();
         log.info("Random generated otp ", otp);
         return SendEmailNotificationRequest.builder()
                 .emailId(request.getEmail())
@@ -65,10 +76,10 @@ public class RegistrationService {
                 .build();
     }
 
-    public AppUser confirmUserRegistration(String emailId, String otp) {
-        String otpFromRedis = String.valueOf(redisTemplate.opsForValue().get(emailId));
-        if(otp.equals(otpFromRedis)){
-            AppUser appUser = repository.findAppUserByEmail(emailId);
+    public AppUser confirmUserRegistration(UserRegistrationConfirmationRequest request) {
+        String otpFromRedis = String.valueOf(redisTemplate.opsForValue().get(REGISTRATION+request.getUsername()));
+        if(request.getEmailOtp().equals(otpFromRedis)){
+            AppUser appUser = repository.findAppUserByUsername(request.getUsername());
             if(appUser.isActive()){
                 throw new BadCredentialsException("User is already registered");
             }

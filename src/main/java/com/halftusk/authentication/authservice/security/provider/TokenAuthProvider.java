@@ -2,7 +2,6 @@ package com.halftusk.authentication.authservice.security.provider;
 
 import com.halftusk.authentication.authservice.security.authentications.TokenAuthentication;
 import com.halftusk.authentication.authservice.utils.JwtUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -12,8 +11,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class TokenAuthProvider implements AuthenticationProvider {
 
-    @Autowired
-    private JwtUtils jwtUtils;
+    private final JwtUtils jwtUtils;
+
+    public TokenAuthProvider(JwtUtils jwtUtils) {
+        this.jwtUtils = jwtUtils;
+    }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
