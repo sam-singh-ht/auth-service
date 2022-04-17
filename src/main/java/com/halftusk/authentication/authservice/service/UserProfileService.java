@@ -40,8 +40,8 @@ public class UserProfileService {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    public AppUser forgotPassword(UserProfileRequest userProfileRequest) {
-        log.info("In forgotPassword of UserProfileService");
+    public AppUser resetPassword(UserProfileRequest userProfileRequest) {
+        log.info("In resetPassword of UserProfileService");
         log.info("User id:: {}", userProfileRequest.getUsername());
         if(!userProfileRequest.getNewPassword().equals(userProfileRequest.getConfirmPassword())){
             throw new RuntimeException("New password and verify password does not match.");

@@ -1,6 +1,5 @@
 package com.halftusk.authentication.authservice.controller;
 
-import com.halftusk.authentication.authservice.entity.AppUser;
 import com.halftusk.authentication.authservice.model.request.UserProfileRequest;
 import com.halftusk.authentication.authservice.service.UserProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +17,9 @@ public class UserProfileController {
     @Autowired
     private UserProfileService userProfileService;
 
-    @PostMapping("/forgotPassword")
-    public ResponseEntity<String> forgotPassword(@Valid @RequestBody UserProfileRequest userProfileRequest){
-        AppUser appUser = userProfileService.forgotPassword(userProfileRequest);
+    @PostMapping("/resetPassword")
+    public ResponseEntity<String> resetPassword(@Valid @RequestBody UserProfileRequest userProfileRequest){
+        userProfileService.resetPassword(userProfileRequest);
         return ResponseEntity.status(HttpStatus.OK).body("Password is updated successfully");
     }
 }
