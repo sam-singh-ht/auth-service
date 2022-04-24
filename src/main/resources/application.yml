@@ -3,13 +3,13 @@ spring:
         allow-circular-references: true
     redis:
         name: gigeconomy
-        host: gigeconomy.jyut4a.ng.0001.apse1.cache.amazonaws.com
+        host: gigeconomy.acosyq.ng.0001.apse1.cache.amazonaws.com
         port: 6379
         timeout: 60000
     datasource:
         driver-class-name: org.postgresql.Driver
         password: Password
-        url: jdbc:postgresql://gigeconomy.cvkhvotq5pu5.ap-southeast-1.rds.amazonaws.com:5432/gigeconomy?sslmode=disable
+        url: jdbc:postgresql://gigeconomy.cmipnwrzaebw.ap-southeast-1.rds.amazonaws.com:5432/gigeconomy?sslmode=disable
         username: postgres
 
 app:
