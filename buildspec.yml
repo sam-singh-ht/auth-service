@@ -1,19 +1,21 @@
 version: 0.2
+
 phases:
   install:
     runtime-versions:
       java: corretto11
-  pre_build:
-    commands:
-      - echo In the pre_build phase...
   build:
     commands:
-      - echo Build started on `date`
+      - ./gradlew build --scan
   post_build:
-    commands:
-      - echo Build completed on `date`
-      - mvn package
-      - mv build/libs/auth-service-0.0.1-SNAPSHOT.jar auth-service-0.0.1-SNAPSHOT.jar
+    finally:
+      - rm -f  /root/.gradle/caches/modules-2/modules-2.lock
+      - rm -fr /root/.gradle/caches/*/plugin-resolution/
 artifacts:
   files:
-    - auth-service-0.0.1-SNAPSHOT.jar
+    - '*-all.jar'
+  base-directory: 'build/libs'
+cache:
+  paths:
+    - '/root/.gradle/caches/**/*'
+    - '/root/.gradle/wrapper/**/*'
