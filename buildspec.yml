@@ -9,5 +9,5 @@ phases:
       - ./gradlew build --scan
 artifacts:
   files:
-    - '*.jar'
+    - 'auth-service-0.0.1-SNAPSHOT.jar'
   base-directory: 'build/libs'
