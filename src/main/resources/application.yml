@@ -8,14 +8,14 @@ spring:
         timeout: 60000
     datasource:
         driver-class-name: org.postgresql.Driver
-        password: Password
-        url: jdbc:postgresql://gigeconomy.cmipnwrzaebw.ap-southeast-1.rds.amazonaws.com:5432/gigeconomy?sslmode=disable
+        url: jdbc:postgresql://gigeconomy.cmipnwrzaebw.ap-southeast-1.rds.amazonaws.com:5432/postgres?sslmode=disable
         username: postgres
+        password: Password
 
 app:
     email:
         registration:
-            senderEmail: sriman456.singh@gmail.com
+            senderEmail: sam.singh@halftusk.com
             regSubject: GIG Economy OTP for registration
             otpSubject: GIG Economy OTP for Login
             otpExpirationInHours: 24
@@ -33,8 +33,8 @@ cloud:
         region:
             static: ap-southeast-1
         credentials:
-            access-key: AKIAXKKX7G5CV6XZ2JN2
-            secret-key: 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
+            access-key: AKIAR2RB4F5XS6FHVRUM
+            secret-key: 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
 
 server:
     error:
