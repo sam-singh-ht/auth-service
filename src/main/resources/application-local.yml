@@ -32,9 +32,6 @@ cloud:
     aws:
         region:
             static: ap-southeast-1
-        credentials:
-            access-key: AKIAXKKX7G5C6EHTOEY4
-            secret-key: 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
 
 server:
     error:

@@ -5,6 +5,7 @@ import com.amazonaws.services.simpleemail.model.*;
 import com.halftusk.authentication.authservice.model.request.SendEmailNotificationRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -41,20 +42,30 @@ public class EmailService {
         String receiverEmail = request.getEmailId();
 
         try {
-            SendEmailRequest sendEmailRequest = new SendEmailRequest()
-                    .withDestination(
-                            new Destination().withToAddresses(receiverEmail))
-                    .withMessage(new Message()
-                            .withBody(new Body().withHtml(
-                                    new Content().withCharset("UTF-8").withData(emailTemplate)))
-                            .withSubject(new Content().withCharset("UTF-8").withData(emailSubject)))
-                    .withSource(senderEmail);
-            amazonSimpleEmailService.sendEmail(sendEmailRequest);
+            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+            simpleMailMessage.setFrom(senderEmail);
+            simpleMailMessage.setTo(receiverEmail);
+            simpleMailMessage.setSubject(regSubject);
+            simpleMailMessage.setText(emailTemplate);
+            amazonSimpleEmailService.sendEmail(prepareMessage(simpleMailMessage));
 
         } catch (Exception e) {
             e.printStackTrace();
         }
         return true;
+
+    }
+
+    private SendEmailRequest prepareMessage(SimpleMailMessage simpleMailMessage) {
+        final Destination destination = new Destination();
+        destination.withToAddresses(simpleMailMessage.getTo());
+        final Content subject = new Content(simpleMailMessage.getSubject());
+        Body body = new Body().withHtml(new Content(simpleMailMessage.getText()));
+        return new SendEmailRequest()
+                .withSource(simpleMailMessage.getFrom())
+                .withDestination(destination)
+                .withMessage(new Message(subject, body))
+                .withReturnPath(simpleMailMessage.getFrom());
 
     }
 
