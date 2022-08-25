@@ -21,9 +21,9 @@ public class RegistrationController {
 
     @PostMapping("/registration")
     public ResponseEntity<AppUser> userRegistration(@Valid @RequestBody RegistrationRequest registrationRequest){
-        AppUser appUser = service.userRegistration(registrationRequest);
         ResponseEntity<AppUser> responseEntity;
         try{
+            AppUser appUser = service.userRegistration(registrationRequest);
             responseEntity = ResponseEntity.status(HttpStatus.OK).body(appUser);
         }catch (Exception exception){
             throw new ResponseStatusException(
