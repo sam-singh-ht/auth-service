@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,21 +23,16 @@ import java.util.Collections;
 
 @Configuration
 @Order(1)
-@EnableGlobalAuthentication
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final UsernamePasswordAuthProvider authProvider;
+    @Autowired
+    private UsernamePasswordAuthProvider authProvider;
 
-    private final OtpAuthenticationProvider otpAuthenticationProvider;
+    @Autowired
+    private OtpAuthenticationProvider otpAuthenticationProvider;
 
-    private final TokenAuthProvider tokenAuthProvider;
-
-    public SecurityConfiguration(UsernamePasswordAuthProvider authProvider, OtpAuthenticationProvider otpAuthenticationProvider,
-                                 TokenAuthProvider tokenAuthProvider) {
-        this.authProvider = authProvider;
-        this.otpAuthenticationProvider = otpAuthenticationProvider;
-        this.tokenAuthProvider = tokenAuthProvider;
-    }
+    @Autowired
+    private TokenAuthProvider tokenAuthProvider;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -83,6 +77,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    public PasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
@@ -90,10 +89,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 registry.addMapping("**/**").allowedOrigins("*");
             }
         };
-    }
-
-    @Bean
-    public PasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }
