@@ -19,9 +19,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Collections;
-import java.util.List;
-
 @Configuration
 @Order(1)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -37,17 +34,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().configurationSource(request -> {
-                    CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(Collections.singletonList("*"));
-                    config.setAllowedMethods(Collections.singletonList("*"));
-                    config.setAllowCredentials(true);
-                    config.setAllowedHeaders(Collections.singletonList("*"));
-                    config.setMaxAge(3600L);
-                    return config;
-                }).and().requestMatchers()
-                .antMatchers("**/registration")
-                .and()
+        http.cors().and().csrf().disable()
                 .authorizeRequests()
                 .anyRequest().authenticated()
                 .and()
